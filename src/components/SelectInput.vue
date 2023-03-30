@@ -1,0 +1,99 @@
+<script lang="ts" setup>
+import { ref, computed } from 'vue';
+import { onClickOutside } from '@vueuse/core';
+
+type commonInput = {
+  label?: string;
+  id: string;
+  palceholder: string;
+  modelValue: string | number | null;
+  optionsList: Array<string>;
+};
+
+const props = withDefaults(defineProps<commonInput>(), {
+  palceholder: '',
+  inputType: 'text',
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const dropDownOpen = ref(false);
+const dropDownWrapper = ref(null);
+const filterText = ref<null | string>(null);
+
+const textToDisplay = computed(() => {
+  if (!props.modelValue && filterText.value) return filterText.value;
+  return props.modelValue;
+});
+
+const filteredList = computed(() => {
+  if (filterText.value === null) return props.optionsList;
+  const filterTextLC = filterText.value.toLowerCase();
+  const filtered = props.optionsList.filter((curr) => {
+    if (`${curr}`.toLowerCase().startsWith(filterTextLC)) return curr;
+  });
+  return filtered.length === 0 ? ['No match found'] : filtered;
+});
+
+onClickOutside(dropDownWrapper, () => {
+  dropDownOpen.value = false;
+  filterText.value = null;
+});
+
+function optionSelected(option: string) {
+  dropDownOpen.value = false;
+  filterText.value = null;
+  emit('update:modelValue', option);
+}
+
+function clearInput(e: KeyboardEvent) {
+  const key = e.key;
+  if (key === 'Backspace' && props.modelValue) {
+    filterText.value = null;
+    emit('update:modelValue', null);
+  }
+}
+</script>
+
+<template>
+  <CoreComponentsCommonInputWrapper :label="props.label" :id="props.id">
+    <div ref="dropDownWrapper" class="select-input-wrapper">
+      <input
+        type="text"
+        :id="props.id"
+        class="select-input"
+        :placeholder="props.palceholder"
+        :value="textToDisplay"
+        autocomplete="off"
+        @focus="dropDownOpen = true"
+        @keydown="clearInput"
+        @input="filterText = ($event.target as HTMLInputElement).value"
+      />
+      <CoreComponentsDropDownList
+        :show="dropDownOpen"
+        :list-items="filteredList"
+        @selected="optionSelected"
+      />
+    </div>
+  </CoreComponentsCommonInputWrapper>
+</template>
+
+<style lang="scss" scoped>
+.select-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 2rem 1rem;
+  color: var(--vt-c-text-1);
+  background: var(--vt-c-bg-soft);
+  border-radius: 4px;
+
+  &::placeholder {
+    font-size: 1.4rem;
+  }
+
+  &-wrapper {
+    position: relative;
+  }
+}
+</style>
