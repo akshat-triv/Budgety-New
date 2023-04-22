@@ -2,37 +2,71 @@
 import { computed } from 'vue';
 
 import FoodIcon from './icons/FoodIcon.vue';
+import ShopCartIcon from './icons/ShopCartIcon.vue';
+import HouseIcon from './icons/HouseIcon.vue';
+import WineIcon from './icons/WineIcon.vue';
+import WalletIcon from './icons/WalletIcon.vue';
+import TaxiIcon from './icons/TaxiIcon.vue';
+import UnknownIcon from './icons/UnknownIcon.vue';
+import MedicalIcon from './icons/MedicalIcon.vue';
 
-type Transaction = {
-  name: string;
-  type: 'credit' | 'debit';
-  date: string;
-  amount: number;
+import DeleteIcon from './icons/DeleteIcon.vue';
+
+export type Transaction = {
+  type: 'Credited' | 'Debited';
+  description: string;
+  amount: number | null;
   tag: string;
+  date: string;
 };
 
 const props = defineProps<Transaction>();
+const emit = defineEmits(['delete']);
 
-const formattedAmount = computed(() =>
-  new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(
-    props.amount
-  )
-);
+const TransactionIcon = computed(() => {
+  if (props.tag === 'Food') return FoodIcon;
+  if (props.tag === 'Shop') return ShopCartIcon;
+  if (props.tag === 'Rent') return HouseIcon;
+  if (props.tag === 'Party') return WineIcon;
+  if (props.tag === 'Money') return WalletIcon;
+  if (props.tag === 'Travel') return TaxiIcon;
+  if (props.tag === 'Medical') return MedicalIcon;
+  if (props.tag === 'Miscellaneous') return UnknownIcon;
+  return null;
+});
+
+const formattedAmount = computed(() => {
+  if (!props.amount) return 'N/A';
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+  }).format(props.amount);
+});
+
+const formattedDate = computed(() => {
+  return new Date(props.date).toDateString();
+});
 </script>
 
 <template>
   <div class="transaction-card">
     <div class="transaction-card-items-wrapper">
       <div class="transaction-card-icon-wrapper">
-        <FoodIcon title="Food" class="transaction-card-icon" />
+        <template v-if="TransactionIcon">
+          <component
+            :is="TransactionIcon"
+            :title="props.tag"
+            class="transaction-card-icon"
+          />
+        </template>
       </div>
       <div class="transaction-card-text-wrapper">
-        <h3>{{ props.name }}</h3>
+        <h3>{{ props.description }}</h3>
         <span>{{ props.tag }}</span>
       </div>
     </div>
     <div class="transaction-card-text-wrapper">
-      <span> {{ props.date }} </span>
+      <span> {{ formattedDate }} </span>
     </div>
     <div class="transaction-card-text-wrapper">
       <h4>{{ formattedAmount }}</h4>
@@ -40,11 +74,19 @@ const formattedAmount = computed(() =>
     <div
       class="transaction-card-type"
       :class="{
-        debited: props.type === 'debit',
-        credited: props.type === 'credit',
+        debited: props.type === 'Debited',
+        credited: props.type === 'Credited',
       }"
     >
-      <span> {{ props.type === 'debit' ? 'Debited' : 'Credited' }} </span>
+      <span> {{ props.type }} </span>
+    </div>
+    <div class="transaction-card-items-wrapper">
+      <div
+        class="transaction-card-icon-wrapper secondary"
+        @click="emit('delete')"
+      >
+        <delete-icon class="transaction-card-icon" />
+      </div>
     </div>
   </div>
 </template>
@@ -89,7 +131,21 @@ const formattedAmount = computed(() =>
       height: 4.8rem;
       padding: 1.2rem;
 
-      margin-right: 2rem;
+      &:not(:last-child) {
+        margin-right: 2rem;
+      }
+
+      &.secondary {
+        background: none;
+        padding: 1.2rem;
+
+        .transaction-card-icon {
+          color: var(--vt-c-text-3);
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
     }
   }
 
@@ -106,6 +162,10 @@ const formattedAmount = computed(() =>
 
     h3 {
       font-size: 1.8rem;
+      width: 20rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     h4 {

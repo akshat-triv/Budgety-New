@@ -35,7 +35,7 @@ const props = defineProps<commonInputWrapper>();
   &-label {
     color: var(--vt-c-text-2);
     font-size: 1.2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.4rem;
   }
 
   &-length-limit {

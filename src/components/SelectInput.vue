@@ -2,6 +2,9 @@
 import { ref, computed } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 
+import DropDownList from './DropDownList.vue';
+import CommonInputWrapper from './CommonInputWrapper.vue';
+
 type commonInput = {
   label?: string;
   id: string;
@@ -56,7 +59,7 @@ function clearInput(e: KeyboardEvent) {
 </script>
 
 <template>
-  <CoreComponentsCommonInputWrapper :label="props.label" :id="props.id">
+  <common-input-wrapper :label="props.label" :id="props.id">
     <div ref="dropDownWrapper" class="select-input-wrapper">
       <input
         type="text"
@@ -69,28 +72,25 @@ function clearInput(e: KeyboardEvent) {
         @keydown="clearInput"
         @input="filterText = ($event.target as HTMLInputElement).value"
       />
-      <CoreComponentsDropDownList
+      <drop-down-list
         :show="dropDownOpen"
         :list-items="filteredList"
         @selected="optionSelected"
       />
     </div>
-  </CoreComponentsCommonInputWrapper>
+  </common-input-wrapper>
 </template>
 
 <style lang="scss" scoped>
 .select-input {
   width: 100%;
-  border: none;
+  border: 1px solid var(--vt-c-divider-light);
   outline: none;
-  padding: 2rem 1rem;
+  padding: 1.2rem 1rem;
   color: var(--vt-c-text-1);
   background: var(--vt-c-bg-soft);
   border-radius: 4px;
-
-  &::placeholder {
-    font-size: 1.4rem;
-  }
+  font-size: 1.4rem;
 
   &-wrapper {
     position: relative;
