@@ -2,17 +2,25 @@
 type buttonProps = {
   buttonText: string;
   disable?: boolean;
+  loading?: boolean;
 };
 
-const props = defineProps<buttonProps>();
+const props = withDefaults(defineProps<buttonProps>(), {
+  loading: false,
+  disable: false,
+});
 </script>
 
 <template>
   <button
     type="submit"
     class="common-button"
-    :class="{ 'opacity-50 cursor-default': props.disable }"
+    :class="{
+      'opacity-50 cursor-default': props.disable,
+      loading: props.loading,
+    }"
   >
+    <span v-if="props.loading" class="spinner"></span>
     {{ props.buttonText }}
   </button>
 </template>
@@ -28,9 +36,37 @@ const props = defineProps<buttonProps>();
   border-radius: 0.4rem;
   transition: all 0.3s;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   &:hover {
     cursor: pointer;
     background: var(--vt-c-brand-light);
+  }
+
+  &.loading {
+    justify-content: space-evenly;
+  }
+}
+
+.spinner {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 100%;
+  border: 2px solid transparent;
+  border-right: 2px solid var(--vt-c-bg-soft);
+  margin-right: 1.2rem;
+  animation: spin 0.3s linear infinite;
+  display: block;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

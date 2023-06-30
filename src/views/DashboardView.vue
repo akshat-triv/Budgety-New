@@ -1,4 +1,9 @@
 <script lang="ts" setup>
+import { customAlphabet } from 'nanoid';
+
+const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const nanoid = customAlphabet(alphabet, 13);
+
 import TransactionCard from '@/components/TransactionCard.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import TxtNumInput from '@/components/TxtNumInput.vue';
@@ -11,6 +16,11 @@ import CommonButton from '@/components/CommonButton.vue';
 import type { Transaction } from '@/types/transaction.types';
 import { useTransactionStore } from '@/stores/transactions';
 import CommonChartWrapper from '@/components/CommonChartWrapper.vue';
+import {
+  getAllTransactions,
+  saveNewTransactionInDB,
+  deleteTransactionFromDB,
+} from '@/transactionsController';
 
 const newTransaction = reactive<Transaction>({
   type: 'Debited',
@@ -18,6 +28,7 @@ const newTransaction = reactive<Transaction>({
   amount: 0,
   tag: '',
   date: '',
+  transaction_id: '',
 });
 
 const transactionStore = useTransactionStore();
@@ -32,23 +43,32 @@ function clearTransaction() {
   newTransaction.date = '';
 }
 
-function addNewTransaction() {
+const addButtonLoader = ref(false);
+
+async function addNewTransaction() {
   const newTransactionData = {
     type: newTransaction.type,
     description: newTransaction.description,
     amount: newTransaction.amount,
     tag: newTransaction.tag,
-    // date: new Date(newTransaction.date).toDateString(),
+    transaction_id: nanoid(),
     date: newTransaction.date,
   } as Transaction;
 
-  transactionStore.addTransactions([newTransactionData]);
+  addButtonLoader.value = true;
+  const response = await saveNewTransactionInDB(newTransactionData);
+  addButtonLoader.value = false;
+
+  if (!response || !response.data) return;
+
+  transactionStore.addTransactions([response.data]);
 
   clearTransaction();
 }
 
-function deleteTransaction(index: number) {
-  transactionStore.deleteTransaction(index);
+async function deleteTransaction(transactionId: string) {
+  await deleteTransactionFromDB(transactionId);
+  transactionStore.deleteTransaction(transactionId);
 }
 
 // ---------------- Expense ratio chart data ------------
@@ -83,7 +103,6 @@ watch(
 );
 
 const pieChartData = computed(() => {
-  console.log('hi');
   const transactions = transactionStore.getTransactions(
     expenseRatioDates.fromDate,
     expenseRatioDates.toDate
@@ -150,29 +169,18 @@ const barGraphData = computed(() => {
   };
 });
 
-console.log(barGraphData.value.data);
-
 // Load from local storage
 
-function loadFromLocalStorage() {
-  if (!localStorage) return;
-  let transactionsInStorage = localStorage.getItem('transactions');
-  if (transactionsInStorage) {
-    try {
-      transactionsInStorage = JSON.parse(transactionsInStorage);
-      if (transactionsInStorage)
-        transactionStore.addTransactions(
-          transactionsInStorage as unknown as Array<Transaction>,
-          true
-        );
-    } catch (_) {
-      console.log('Error at parsing saved transactions');
-    }
-  }
+async function loadFromSupabese() {
+  const transactions = await getAllTransactions();
+  transactionStore.addTransactions(
+    transactions as unknown as Array<Transaction>,
+    true
+  );
 }
 
 onMounted(() => {
-  loadFromLocalStorage();
+  loadFromSupabese();
 });
 </script>
 
@@ -222,7 +230,11 @@ onMounted(() => {
           v-model="newTransaction.date"
           :label="'Date'"
         />
-        <CommonButton :button-text="'Add'" @click="addNewTransaction" />
+        <CommonButton
+          :button-text="'Add'"
+          :loading="addButtonLoader"
+          @click="addNewTransaction"
+        />
       </div>
       <div class="transaction-divider">
         <span class="text">Transactions</span>
@@ -236,7 +248,7 @@ onMounted(() => {
           :date="transactionDetail.date"
           :amount="transactionDetail.amount"
           :tag="transactionDetail.tag"
-          @delete="deleteTransaction(transactionIdx)"
+          @delete="deleteTransaction(transactionDetail.transaction_id)"
         />
       </div>
     </div>

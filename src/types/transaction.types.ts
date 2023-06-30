@@ -4,4 +4,6 @@ export type Transaction = {
   amount: number;
   tag: string;
   date: string;
+  id?: number;
+  transaction_id: string;
 };

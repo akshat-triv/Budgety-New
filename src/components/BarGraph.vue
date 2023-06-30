@@ -31,8 +31,6 @@ const props = defineProps<BarGraphProps>();
 const chartData = computed(() => {
   const datasets = [];
 
-  console.log(props.data);
-
   if (props.data.length)
     datasets.push({
       label: props.dataLabel[0],

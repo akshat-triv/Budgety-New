@@ -33,7 +33,10 @@ export const useTransactionStore = defineStore('transactions', () => {
     localStorage.setItem('transactions', JSON.stringify(transactions.value));
   }
 
-  function deleteTransaction(index: number) {
+  function deleteTransaction(transactionId: string) {
+    const index = transactions.value.findIndex(
+      (curr) => curr.transaction_id === transactionId
+    );
     transactions.value.splice(index, 1);
     localStorage.setItem('transactions', JSON.stringify(transactions.value));
   }
