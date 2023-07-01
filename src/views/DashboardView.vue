@@ -261,6 +261,8 @@ onMounted(() => {
         :date-preset-options="['Last 7 days', 'This month', 'Custom date']"
         :readonly="expenseRatioPreset !== 'Custom date'"
         @update:date-preset-value="expenseRatioPreset = $event"
+        @update:from-date="expenseRatioDates.fromDate = $event"
+        @update:to-date="expenseRatioDates.toDate = $event"
       >
         <pie-chart
           :data-label="'Expense Distribution'"
@@ -276,6 +278,8 @@ onMounted(() => {
         :date-preset-options="['In Months', 'In Years']"
         :readonly="false"
         @update:date-preset-value="expensesPreset = $event"
+        @update:from-date="expenseRatioDates.fromDate = $event"
+        @update:to-date="expenseRatioDates.toDate = $event"
       >
         <bar-graph
           :data-label="['Expenses', 'Income']"
