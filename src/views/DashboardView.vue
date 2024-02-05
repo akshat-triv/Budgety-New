@@ -289,8 +289,8 @@ onMounted(() => {
         :date-preset-options="['In Months', 'In Years']"
         :readonly="false"
         @update:date-preset-value="expensesPreset = $event"
-        @update:from-date="expenseRatioDates.fromDate = $event"
-        @update:to-date="expenseRatioDates.toDate = $event"
+        @update:from-date="expensesDates.fromDate = $event"
+        @update:to-date="expensesDates.toDate = $event"
       >
         <bar-graph
           :data-label="['Expenses', 'Income']"
