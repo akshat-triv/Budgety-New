@@ -10,7 +10,8 @@ export async function getAllTransactions() {
   try {
     let { data: transactions, error } = await supabase
       .from('transactions')
-      .select('*');
+      .select('*')
+      .order('created_at', { ascending: false });
     return transactions;
   } catch (_) {
     console.log('Error in getting transactions');

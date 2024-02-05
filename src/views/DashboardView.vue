@@ -21,6 +21,7 @@ import {
   saveNewTransactionInDB,
   deleteTransactionFromDB,
 } from '@/transactionsController';
+import { useInfiniteScroll } from '@vueuse/core';
 
 const newTransaction = reactive<Transaction>({
   type: 'Debited',
@@ -33,7 +34,7 @@ const newTransaction = reactive<Transaction>({
 
 const transactionStore = useTransactionStore();
 
-const transactions = computed(() => transactionStore.transactions);
+const transactions = computed(() => transactionStore.visibleTransactions);
 
 function clearTransaction() {
   newTransaction.type = 'Debited';
@@ -179,6 +180,16 @@ async function loadFromSupabese() {
   );
 }
 
+const transactionsWrapper = ref<HTMLElement | null>(null);
+
+useInfiniteScroll(
+  transactionsWrapper,
+  () => {
+    transactionStore.showMoreTransactions();
+  },
+  { distance: 10 }
+);
+
 onMounted(() => {
   loadFromSupabese();
 });
@@ -239,7 +250,7 @@ onMounted(() => {
       <div class="transaction-divider">
         <span class="text">Transactions</span>
       </div>
-      <div class="transactions-wrapper">
+      <div ref="transactionsWrapper" class="transactions-wrapper">
         <TransactionCard
           v-for="(transactionDetail, transactionIdx) of transactions"
           :key="`transaction-${transactionIdx}`"
