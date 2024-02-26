@@ -59,7 +59,7 @@ const toDate = computed({
         v-model="datePresetValue"
         :options-list="props.datePresetOptions"
         :label="'Time Period'"
-        :palceholder="'Select'"
+        :placeholder="'Select'"
       />
       <div class="date-input-wrapper">
         <DateInput

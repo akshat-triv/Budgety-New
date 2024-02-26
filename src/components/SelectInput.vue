@@ -8,13 +8,13 @@ import CommonInputWrapper from './CommonInputWrapper.vue';
 type commonInput = {
   label?: string;
   id: string;
-  palceholder: string;
+  placeholder: string;
   modelValue: string | number | null;
   optionsList: Array<string>;
 };
 
 const props = withDefaults(defineProps<commonInput>(), {
-  palceholder: '',
+  placeholder: '',
   inputType: 'text',
 });
 
@@ -65,7 +65,7 @@ function clearInput(e: KeyboardEvent) {
         type="text"
         :id="props.id"
         class="select-input"
-        :placeholder="props.palceholder"
+        :placeholder="props.placeholder"
         :value="textToDisplay"
         autocomplete="off"
         @focus="dropDownOpen = true"

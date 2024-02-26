@@ -1,71 +1,25 @@
 <script lang="ts" setup>
-import { customAlphabet } from 'nanoid';
-
-const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const nanoid = customAlphabet(alphabet, 13);
-
 import TransactionCard from '@/components/TransactionCard.vue';
-import SelectInput from '@/components/SelectInput.vue';
-import TxtNumInput from '@/components/TxtNumInput.vue';
 import PieChart from '@/components/PieChart.vue';
 import BarGraph from '@/components/BarGraph.vue';
+import AddNewTransaction from '@/components/AddNewTransaction.vue';
 
 import { reactive, computed, onMounted, ref, watch } from 'vue';
-import DateInput from '@/components/DateInput.vue';
-import CommonButton from '@/components/CommonButton.vue';
+
 import type { Transaction } from '@/types/transaction.types';
 import { useTransactionStore } from '@/stores/transactions';
 import CommonChartWrapper from '@/components/CommonChartWrapper.vue';
+
 import {
   getAllTransactions,
-  saveNewTransactionInDB,
   deleteTransactionFromDB,
 } from '@/transactionsController';
-import { useInfiniteScroll } from '@vueuse/core';
 
-const newTransaction = reactive<Transaction>({
-  type: 'Debited',
-  description: '',
-  amount: 0,
-  tag: '',
-  date: '',
-  transaction_id: '',
-});
+import { useInfiniteScroll } from '@vueuse/core';
 
 const transactionStore = useTransactionStore();
 
 const transactions = computed(() => transactionStore.visibleTransactions);
-
-function clearTransaction() {
-  newTransaction.type = 'Debited';
-  newTransaction.description = '';
-  newTransaction.amount = 0;
-  newTransaction.tag = '';
-  newTransaction.date = '';
-}
-
-const addButtonLoader = ref(false);
-
-async function addNewTransaction() {
-  const newTransactionData = {
-    type: newTransaction.type,
-    description: newTransaction.description,
-    amount: newTransaction.amount,
-    tag: newTransaction.tag,
-    transaction_id: nanoid(),
-    date: newTransaction.date,
-  } as Transaction;
-
-  addButtonLoader.value = true;
-  const response = await saveNewTransactionInDB(newTransactionData);
-  addButtonLoader.value = false;
-
-  if (!response || !response.data) return;
-
-  transactionStore.addTransactions([response.data]);
-
-  clearTransaction();
-}
 
 async function deleteTransaction(transactionId: string) {
   await deleteTransactionFromDB(transactionId);
@@ -198,55 +152,7 @@ onMounted(() => {
 <template>
   <div class="dashboard-view">
     <div class="transactions-view">
-      <div class="add-new-transaction">
-        <select-input
-          :id="'transaction-type'"
-          v-model="newTransaction.type"
-          :options-list="['Debited', 'Credited']"
-          :label="'Transaction Type'"
-          :palceholder="'Select'"
-        />
-        <txt-num-input
-          :id="'transaction-name'"
-          v-model="newTransaction.description"
-          :label="'Name'"
-          :palceholder="'Enter Description'"
-          :input-type="'text'"
-        />
-        <txt-num-input
-          :id="'transaction-amount'"
-          v-model="newTransaction.amount"
-          :label="'Amount'"
-          :palceholder="'Enter Amount'"
-          :input-type="'number'"
-        />
-        <select-input
-          :id="'transaction-tag'"
-          v-model="newTransaction.tag"
-          :options-list="[
-            'Food',
-            'Rent',
-            'Party',
-            'Shop',
-            'Money',
-            'Travel',
-            'Medical',
-            'Miscellaneous',
-          ]"
-          :label="'Tag'"
-          :palceholder="'Select'"
-        />
-        <DateInput
-          :id="'transaction-date'"
-          v-model="newTransaction.date"
-          :label="'Date'"
-        />
-        <CommonButton
-          :button-text="'Add'"
-          :loading="addButtonLoader"
-          @click="addNewTransaction"
-        />
-      </div>
+      <add-new-transaction />
       <div class="transaction-divider">
         <span class="text">Transactions</span>
       </div>
@@ -339,39 +245,6 @@ onMounted(() => {
     }
   }
 }
-
-.add-new-transaction {
-  display: flex;
-  align-items: flex-end;
-
-  & > *:not(:last-child) {
-    margin-right: 1.2rem;
-  }
-
-  & > * {
-    &:nth-child(1) {
-      flex: 0 0 12%;
-    }
-
-    &:nth-child(2) {
-      flex: 0 0 30%;
-    }
-
-    &:nth-child(3) {
-      flex: 0 0 15%;
-    }
-
-    &:nth-child(4) {
-      flex: 0 0 12%;
-    }
-
-    &:last-child {
-      flex: 1;
-      margin-left: 1.2rem;
-    }
-  }
-}
-
 .transaction-divider {
   height: 2px;
   background-color: var(--vt-c-bg-soft);
