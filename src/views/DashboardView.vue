@@ -3,6 +3,7 @@ import TransactionCard from '@/components/TransactionCard.vue';
 import PieChart from '@/components/PieChart.vue';
 import BarGraph from '@/components/BarGraph.vue';
 import AddNewTransaction from '@/components/AddNewTransaction.vue';
+import AlertConfirmModal from '@/components/AlertConfirmModal.vue';
 
 import { reactive, computed, onMounted, ref, watch } from 'vue';
 
@@ -21,7 +22,16 @@ const transactionStore = useTransactionStore();
 
 const transactions = computed(() => transactionStore.visibleTransactions);
 
+const confirm = ref<InstanceType<typeof AlertConfirmModal> | null>(null);
+
 async function deleteTransaction(transactionId: string) {
+  const res = await confirm.value?.openModal(
+    'You sure want to delete the transaction?',
+    false
+  );
+
+  if (!res) return;
+
   await deleteTransactionFromDB(transactionId);
   transactionStore.deleteTransaction(transactionId);
 }
@@ -206,6 +216,9 @@ onMounted(() => {
       </common-chart-wrapper>
     </div>
   </div>
+  <teleport to="#app">
+    <alert-confirm-modal ref="confirm" />
+  </teleport>
 </template>
 
 <style lang="scss" scoped>
