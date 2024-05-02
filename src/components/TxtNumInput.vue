@@ -4,13 +4,13 @@ import CommonInputWrapper from './CommonInputWrapper.vue';
 type commonInput = {
   label?: string;
   id: string;
-  palceholder: string;
+  placeholder: string;
   inputType: 'text' | 'number';
   modelValue: string | number | null;
 };
 
 const props = withDefaults(defineProps<commonInput>(), {
-  palceholder: '',
+  placeholder: '',
   inputType: 'text',
 });
 
@@ -36,7 +36,7 @@ function updateValue(value: string) {
       type="text"
       :id="props.id"
       class="txt-num-input"
-      :placeholder="props.palceholder"
+      :placeholder="props.placeholder"
       :value="props.modelValue"
       @keydown="numbersOnly"
       @input="updateValue(($event.target as HTMLInputElement).value)"
