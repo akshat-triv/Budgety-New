@@ -21,7 +21,7 @@ import {
   saveNewTransactionInDB,
   deleteTransactionFromDB,
 } from '@/transactionsController';
-import { useInfiniteScroll } from '@vueuse/core';
+import { useInfiniteScroll, useActiveElement } from '@vueuse/core';
 
 const newTransaction = reactive<Transaction>({
   type: 'Debited',
@@ -189,6 +189,12 @@ useInfiniteScroll(
   },
   { distance: 10 }
 );
+
+const activeElement = useActiveElement();
+
+watch(activeElement, (el) => {
+  console.log(el);
+});
 
 onMounted(() => {
   loadFromSupabese();
