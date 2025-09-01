@@ -98,14 +98,24 @@ onMounted(() => {
       :id="'transaction-tag'"
       v-model="newTransaction.tag"
       :options-list="[
+        'Housing',
         'Food',
-        'Rent',
-        'Party',
-        'Shop',
-        'Money',
+        'Utilities',
+        'Transportation',
+        'Insurance',
+        'Debt Payments',
+        'Personal Care',
+        'Entertainment',
+        'Clothing',
+        'Technology',
+        'Health Care',
+        'Child and Dependent Care',
+        'Gifts and Donations',
+        'Savings and Investments',
         'Travel',
-        'Medical',
-        'Miscellaneous',
+        'Professional Services',
+        'Pet Care',
+        'Miscellaneous'
       ]"
       :label="'Tag'"
       :placeholder="'Select'"
