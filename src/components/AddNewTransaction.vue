@@ -106,6 +106,7 @@ onMounted(() => {
         'Debt Payments',
         'Personal Care',
         'Entertainment',
+        'Drinks & Ciggs',
         'Clothing',
         'Technology',
         'Health Care',
@@ -115,6 +116,7 @@ onMounted(() => {
         'Travel',
         'Professional Services',
         'Pet Care',
+        'Money',
         'Miscellaneous'
       ]"
       :label="'Tag'"
