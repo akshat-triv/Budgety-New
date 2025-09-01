@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { Transaction } from './types/transaction.types';
 
 const supabaseUrl = 'https://dxfiybdlucmchhmurnny.supabase.co';
-const supabaseKey = `yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4Zml5YmRsdWNtY2hobXVybm55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY3NDY1ODgsImV4cCI6MjA3MjMyMjU4OH0._jcnSJbLth_LD8kWUOGKz3QMhniJIK7jvGPExIKXlBA`;
+const supabaseKey = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4Zml5YmRsdWNtY2hobXVybm55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY3NDY1ODgsImV4cCI6MjA3MjMyMjU4OH0._jcnSJbLth_LD8kWUOGKz3QMhniJIK7jvGPExIKXlBA`;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
