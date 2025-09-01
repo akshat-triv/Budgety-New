@@ -7,7 +7,6 @@ import HouseIcon from './icons/HouseIcon.vue';
 import WineIcon from './icons/WineIcon.vue';
 import WalletIcon from './icons/WalletIcon.vue';
 import TaxiIcon from './icons/TaxiIcon.vue';
-import UnknownIcon from './icons/UnknownIcon.vue';
 import MedicalIcon from './icons/MedicalIcon.vue';
 
 import DeleteIcon from './icons/DeleteIcon.vue';
@@ -23,15 +22,34 @@ export type Transaction = {
 const props = defineProps<Transaction>();
 const emit = defineEmits(['delete']);
 
+  // 'Housing',
+  // 'Food',
+  // 'Utilities',
+  // 'Transportation',
+  // 'Insurance',
+  // 'Debt Payments',
+  // 'Personal Care',
+  // 'Entertainment',
+  // 'Clothing',
+  // 'Technology',
+  // 'Health Care',
+  // 'Child and Dependent Care',
+  // 'Gifts and Donations',
+  // 'Savings and Investments',
+  // 'Travel',
+  // 'Professional Services',
+  // 'Pet Care',
+  // 'Miscellaneous'
+  // Drinks & Ciggs
+
 const TransactionIcon = computed(() => {
   if (props.tag === 'Food') return FoodIcon;
-  if (props.tag === 'Shop') return ShopCartIcon;
-  if (props.tag === 'Rent') return HouseIcon;
-  if (props.tag === 'Party') return WineIcon;
+  if (props.tag === 'Housing') return HouseIcon;
+  if (props.tag === 'Drinks & Ciggs') return WineIcon;
   if (props.tag === 'Money') return WalletIcon;
-  if (props.tag === 'Travel') return TaxiIcon;
-  if (props.tag === 'Medical') return MedicalIcon;
-  if (props.tag === 'Miscellaneous') return UnknownIcon;
+  if (props.tag === 'Transportation') return TaxiIcon;
+  if (props.tag === 'Health Care') return MedicalIcon;
+  if (props.tag === 'Miscellaneous') return ShopCartIcon;
   return null;
 });
 
