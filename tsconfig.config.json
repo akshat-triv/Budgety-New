@@ -1,14 +1,18 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.node.json",
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "target": "es2024",
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "ignoreDeprecations": "5.0"
+  },
   "include": [
     "vite.config.*",
     "vitest.config.*",
     "cypress.config.*",
     "playwright.config.*"
-  ],
-  "compilerOptions": {
-    "composite": true,
-    "types": ["node"],
-    "ignoreDeprecations": "5.0"
-  }
+  ]
 }

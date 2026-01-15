@@ -13,6 +13,6 @@ export default defineConfig({
     },
   },
   server: {
-    port: 6060,
+    port: 3000,
   },
 });
