@@ -13,3 +13,36 @@ a,
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
 }
+
+.spinner {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 100%;
+  border: 2px solid transparent;
+  border-right: 2px solid var(--vt-c-brand);
+  animation: spin 0.3s linear infinite;
+}
+
+.spinner-wrapper {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--vt-c-bg-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

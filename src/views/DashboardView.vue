@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import TransactionCard from '@/components/TransactionCard.vue';
 import PieChart from '@/components/PieChart.vue';
+import GlobalHeader from '@/components/GlobalHeader.vue';
 import BarGraph from '@/components/BarGraph.vue';
 import AddNewTransaction from '@/components/AddNewTransaction.vue';
 import AlertConfirmModal from '@/components/AlertConfirmModal.vue';
@@ -16,7 +17,7 @@ import {
   deleteTransactionFromDB,
 } from '@/transactionsController';
 
-import { useInfiniteScroll, useActiveElement } from '@vueuse/core';
+import { useInfiniteScroll } from '@vueuse/core';
 
 const transactionStore = useTransactionStore();
 
@@ -135,9 +136,12 @@ const barGraphData = computed(() => {
 });
 
 // Load from local storage
+const transactionLoading = ref(false);
 
 async function loadFromSupabese() {
+  transactionLoading.value = true;
   const transactions = await getAllTransactions();
+  transactionLoading.value = false;
   transactionStore.addTransactions(
     transactions as unknown as Array<Transaction>,
     true
@@ -154,12 +158,6 @@ useInfiniteScroll(
   { distance: 10 }
 );
 
-const activeElement = useActiveElement();
-
-watch(activeElement, (el) => {
-  console.log(el);
-});
-
 onMounted(() => {
   loadFromSupabese();
 });
@@ -167,59 +165,69 @@ onMounted(() => {
 
 <template>
   <div class="dashboard-view">
-    <div class="transactions-view">
-      <add-new-transaction />
-      <div class="transaction-divider">
-        <span class="text">Transactions</span>
+    <global-header
+      :current-balance="55000"
+      :savings-balance="25000"
+      :investments-balance="30000"
+    />
+    <div class="dashboard-view-body">
+      <div class="transactions-view">
+        <add-new-transaction />
+        <div class="transaction-divider">
+          <span class="text">Transactions</span>
+        </div>
+        <div ref="transactionsWrapper" class="transactions-wrapper">
+          <TransactionCard
+            v-for="(transactionDetail, transactionIdx) of transactions"
+            :key="`transaction-${transactionIdx}`"
+            :type="transactionDetail.type"
+            :description="transactionDetail.description"
+            :date="transactionDetail.date"
+            :amount="transactionDetail.amount"
+            :tag="transactionDetail.tag"
+            @delete="deleteTransaction(transactionDetail.transaction_id)"
+          />
+          <div v-if="transactionLoading" class="spinner-wrapper">
+            <span class="spinner"></span>
+          </div>
+        </div>
       </div>
-      <div ref="transactionsWrapper" class="transactions-wrapper">
-        <TransactionCard
-          v-for="(transactionDetail, transactionIdx) of transactions"
-          :key="`transaction-${transactionIdx}`"
-          :type="transactionDetail.type"
-          :description="transactionDetail.description"
-          :date="transactionDetail.date"
-          :amount="transactionDetail.amount"
-          :tag="transactionDetail.tag"
-          @delete="deleteTransaction(transactionDetail.transaction_id)"
-        />
+      <div class="analytics-view">
+        <common-chart-wrapper
+          :title="'Expense Ratio'"
+          :date-preset-value="expenseRatioPreset"
+          :to-date="expenseRatioDates.toDate"
+          :from-date="expenseRatioDates.fromDate"
+          :date-preset-options="['Last 7 days', 'This month', 'Custom date']"
+          :readonly="expenseRatioPreset !== 'Custom date'"
+          @update:date-preset-value="expenseRatioPreset = $event"
+          @update:from-date="expenseRatioDates.fromDate = $event"
+          @update:to-date="expenseRatioDates.toDate = $event"
+        >
+          <pie-chart
+            :data-label="'Expense Distribution'"
+            :data="pieChartData.data"
+            :labels="pieChartData.labels"
+          />
+        </common-chart-wrapper>
+        <common-chart-wrapper
+          :title="'Expenses'"
+          :date-preset-value="expensesPreset"
+          :to-date="expensesDates.toDate"
+          :from-date="expensesDates.fromDate"
+          :date-preset-options="['In Months', 'In Years']"
+          :readonly="false"
+          @update:date-preset-value="expensesPreset = $event"
+          @update:from-date="expensesDates.fromDate = $event"
+          @update:to-date="expensesDates.toDate = $event"
+        >
+          <bar-graph
+            :data-label="['Expenses', 'Income']"
+            :data="barGraphData.data"
+            :labels="barGraphData.labels"
+          />
+        </common-chart-wrapper>
       </div>
-    </div>
-    <div class="analytics-view">
-      <common-chart-wrapper
-        :title="'Expense Ratio'"
-        :date-preset-value="expenseRatioPreset"
-        :to-date="expenseRatioDates.toDate"
-        :from-date="expenseRatioDates.fromDate"
-        :date-preset-options="['Last 7 days', 'This month', 'Custom date']"
-        :readonly="expenseRatioPreset !== 'Custom date'"
-        @update:date-preset-value="expenseRatioPreset = $event"
-        @update:from-date="expenseRatioDates.fromDate = $event"
-        @update:to-date="expenseRatioDates.toDate = $event"
-      >
-        <pie-chart
-          :data-label="'Expense Distribution'"
-          :data="pieChartData.data"
-          :labels="pieChartData.labels"
-        />
-      </common-chart-wrapper>
-      <common-chart-wrapper
-        :title="'Expenses'"
-        :date-preset-value="expensesPreset"
-        :to-date="expensesDates.toDate"
-        :from-date="expensesDates.fromDate"
-        :date-preset-options="['In Months', 'In Years']"
-        :readonly="false"
-        @update:date-preset-value="expensesPreset = $event"
-        @update:from-date="expensesDates.fromDate = $event"
-        @update:to-date="expensesDates.toDate = $event"
-      >
-        <bar-graph
-          :data-label="['Expenses', 'Income']"
-          :data="barGraphData.data"
-          :labels="barGraphData.labels"
-        />
-      </common-chart-wrapper>
     </div>
   </div>
   <teleport to="#app">
@@ -231,10 +239,16 @@ onMounted(() => {
 .dashboard-view {
   width: 100%;
   height: 100%;
-  display: flex;
-  padding-top: 4rem;
-  justify-content: space-between;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &-body {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    overflow: hidden;
+  }
 }
 
 .transactions-wrapper {
@@ -243,6 +257,7 @@ onMounted(() => {
   padding: 1rem 2rem;
   overflow-y: auto;
   flex: 1;
+  position: relative;
 
   & > * {
     &:not(:last-of-type) {

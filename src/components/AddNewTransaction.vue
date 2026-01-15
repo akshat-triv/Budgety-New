@@ -117,7 +117,7 @@ onMounted(() => {
         'Professional Services',
         'Pet Care',
         'Money',
-        'Miscellaneous'
+        'Miscellaneous',
       ]"
       :label="'Tag'"
       :placeholder="'Select'"
@@ -150,7 +150,7 @@ onMounted(() => {
     }
 
     &:nth-child(2) {
-      flex: 0 0 30%;
+      flex: 0 0 25%;
     }
 
     &:nth-child(3) {
@@ -158,7 +158,7 @@ onMounted(() => {
     }
 
     &:nth-child(4) {
-      flex: 0 0 12%;
+      flex: 0 0 15%;
     }
 
     &:last-child {

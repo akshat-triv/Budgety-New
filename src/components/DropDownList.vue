@@ -70,10 +70,9 @@ function onSelect(item: string) {
 
   &-item {
     width: 100%;
-    height: 4rem;
     display: flex;
     align-items: center;
-    padding: 1.2rem 1rem;
+    padding: 0.8rem 1rem;
 
     &:hover {
       cursor: pointer;
