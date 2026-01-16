@@ -1,4 +1,4 @@
-import { getUserDetailsFromDB } from '@/userController';
+import { getUserDetailsFromDB, updateUserDetailsInDB } from '@/userController';
 import { Session } from '@supabase/supabase-js';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
@@ -23,6 +23,17 @@ export const useUserStore = defineStore('user', () => {
     userSession.value = session;
 
     localStorage.setItem('userSession', JSON.stringify(session));
+  }
+
+  async function updateUserInfo(
+    infoType: 'savings' | 'investments' | 'current',
+    amount: number
+  ) {
+    if (!user.value) return;
+
+    user.value[infoType] = amount;
+
+    await updateUserDetailsInDB(user.value?.email || '', infoType, amount);
   }
 
   async function loadUserSessionAndDetails() {
@@ -63,5 +74,6 @@ export const useUserStore = defineStore('user', () => {
     userSession,
     setUserSession,
     loadUserSessionAndDetails,
+    updateUserInfo,
   };
 });

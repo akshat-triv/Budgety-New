@@ -52,6 +52,7 @@ async function addNewTransaction() {
 
   addButtonLoader.value = true;
   const response = await saveNewTransactionInDB(newTransactionData);
+  await updateBalance();
   addButtonLoader.value = false;
 
   if (!response || !response.data) return;
@@ -59,6 +60,32 @@ async function addNewTransaction() {
   transactionStore.addTransactions([response.data]);
 
   clearTransaction();
+}
+
+async function updateBalance() {
+  if (newTransaction.type === 'Debited') {
+    await userStore.updateUserInfo(
+      'current',
+      user.value.current - Number(newTransaction.amount)
+    );
+
+    if (newTransaction.tag === 'Savings') {
+      await userStore.updateUserInfo(
+        'savings',
+        user.value.savings + Number(newTransaction.amount)
+      );
+    } else if (newTransaction.tag === 'Investments') {
+      await userStore.updateUserInfo(
+        'investments',
+        user.value.investments + Number(newTransaction.amount)
+      );
+    }
+  } else {
+    await userStore.updateUserInfo(
+      'current',
+      user.value.current + Number(newTransaction.amount)
+    );
+  }
 }
 
 const amountInputEl = ref<HTMLElement>();

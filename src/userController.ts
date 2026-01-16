@@ -128,3 +128,34 @@ export async function getUserDetailsFromDB(userId: string) {
     return null;
   }
 }
+
+export async function updateUserDetailsInDB(
+  userId: string,
+  info_type: 'savings' | 'investments' | 'current',
+  newValue: number
+) {
+  try {
+    const updateData: { [key: string]: number } = {};
+    updateData[info_type] = newValue;
+
+    const { error } = await supabase
+      .from('personal_info')
+      .update(updateData)
+      .eq('user_id', userId);
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      type: 'success',
+      message: 'Updated user details successfully',
+    };
+  } catch (_) {
+    console.log('Error in updating user details');
+    return {
+      type: 'fail',
+      message: 'Error in updating user details',
+    };
+  }
+}
