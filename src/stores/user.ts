@@ -6,6 +6,7 @@ import {
 import { Session } from '@supabase/supabase-js';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { useAppStore } from './app';
 
 type User = {
   name: string;
@@ -16,6 +17,8 @@ type User = {
 } | null;
 
 export const useUserStore = defineStore('user', () => {
+  const appStore = useAppStore();
+
   const user = ref<User>(null);
   const userSession = ref<Session | null>(null);
 
@@ -67,8 +70,11 @@ export const useUserStore = defineStore('user', () => {
         savings: userDetails.savings,
         investments: userDetails.investments,
       };
+
+      appStore.addNotification('User details fetched successfully.', 'info');
     } else {
       user.value = null;
+      appStore.addNotification('Error fetching user details.', 'error');
     }
 
     return user.value;
@@ -79,6 +85,8 @@ export const useUserStore = defineStore('user', () => {
     setUser(null);
 
     await signoutCurrentUser();
+
+    appStore.addNotification('Signed out successfully', 'success');
   }
 
   return {

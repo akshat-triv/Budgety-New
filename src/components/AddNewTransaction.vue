@@ -12,11 +12,13 @@ import type { Transaction } from '@/types/transaction.types';
 import { customAlphabet } from 'nanoid';
 import { useFocusWithin } from '@vueuse/core';
 import { useUserStore } from '@/stores/user';
+import { useAppStore } from '@/stores/app';
 
 const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const nanoid = customAlphabet(alphabet, 13);
 
 const transactionStore = useTransactionStore();
+const appStore = useAppStore();
 const userStore = useUserStore();
 const user = computed(() => userStore.user);
 
@@ -52,10 +54,11 @@ async function addNewTransaction() {
 
   addButtonLoader.value = true;
   const response = await saveNewTransactionInDB(newTransactionData);
-  await updateBalance();
+  appStore.addNotification(response.message, response.type);
   addButtonLoader.value = false;
-
   if (!response || !response.data) return;
+
+  await updateBalance();
 
   transactionStore.addTransactions([response.data]);
 

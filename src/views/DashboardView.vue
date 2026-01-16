@@ -21,8 +21,10 @@ import {
 import { useInfiniteScroll } from '@vueuse/core';
 import { useUserStore } from '@/stores/user';
 import router from '@/router';
+import { useAppStore } from '@/stores/app';
 
 const transactionStore = useTransactionStore();
+const appStore = useAppStore();
 const userStore = useUserStore();
 
 const transactions = computed(() => transactionStore.visibleTransactions);
@@ -40,7 +42,12 @@ async function deleteTransaction(transactionId: string) {
 
   if (!res) return;
 
-  await deleteTransactionFromDB(transactionId);
+  const response = await deleteTransactionFromDB(transactionId);
+
+  appStore.addNotification(response.message, response.type);
+
+  if (response.type !== 'success') return;
+
   transactionStore.deleteTransaction(transactionId);
 }
 
@@ -145,14 +152,16 @@ const barGraphData = computed(() => {
 // Load from local storage
 const transactionLoading = ref(false);
 
-async function loadFromSupabese(userEmail: string) {
+async function loadFromSupabese() {
   transactionLoading.value = true;
-  const transactions = await getAllTransactions(userEmail);
+  const transactions = await getAllTransactions();
   transactionLoading.value = false;
   transactionStore.addTransactions(
     transactions as unknown as Array<Transaction>,
     true
   );
+
+  appStore.addNotification('Transactions loaded successfully.', 'info');
 }
 
 const transactionsWrapper = ref<HTMLElement | null>(null);
@@ -169,7 +178,7 @@ watch(
   user,
   async (newUser) => {
     if (newUser !== null) {
-      await loadFromSupabese(newUser.email);
+      await loadFromSupabese();
     }
   },
   { immediate: true }

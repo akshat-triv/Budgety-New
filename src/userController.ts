@@ -1,4 +1,5 @@
 import { supabase } from './transactionsController';
+import { NotificationTypes } from './types/application.types';
 
 export async function signinNewUser(email: string, password: string) {
   try {
@@ -12,14 +13,14 @@ export async function signinNewUser(email: string, password: string) {
     }
 
     return {
-      type: 'success',
+      type: 'success' as NotificationTypes,
       data,
       message: 'Signed up successfully',
     };
   } catch (_) {
     console.log('Error in signing up');
     return {
-      type: 'fail',
+      type: 'error' as NotificationTypes,
       message: 'Error in signing up',
     };
   }
@@ -41,13 +42,13 @@ export async function saveUserDetailsToDB(
       current,
     });
     return {
-      type: 'success',
+      type: 'success' as NotificationTypes,
       message: 'Saved user details successfully',
     };
   } catch (_) {
     console.log('Error in saving user details');
     return {
-      type: 'fail',
+      type: 'error' as NotificationTypes,
       message: 'Error in saving user details',
     };
   }
@@ -65,14 +66,14 @@ export async function loginExistingUser(email: string, password: string) {
     }
 
     return {
-      type: 'success',
+      type: 'success' as NotificationTypes,
       data,
       message: 'Logged in successfully',
     };
   } catch (_) {
     console.log('Error in logging in');
     return {
-      type: 'fail',
+      type: 'error' as NotificationTypes,
       message: 'Error in logging in',
     };
   }
@@ -87,13 +88,13 @@ export async function signoutCurrentUser() {
     }
 
     return {
-      type: 'success',
+      type: 'success' as NotificationTypes,
       message: 'Signed out successfully',
     };
   } catch (_) {
     console.log('Error in signing out');
     return {
-      type: 'fail',
+      type: 'error' as NotificationTypes,
       message: 'Error in signing out',
     };
   }
@@ -148,13 +149,13 @@ export async function updateUserDetailsInDB(
     }
 
     return {
-      type: 'success',
+      type: 'success' as NotificationTypes,
       message: 'Updated user details successfully',
     };
   } catch (_) {
     console.log('Error in updating user details');
     return {
-      type: 'fail',
+      type: 'error' as NotificationTypes,
       message: 'Error in updating user details',
     };
   }
@@ -180,13 +181,13 @@ export async function updateAllUserDetailsInDB(
     }
 
     return {
-      type: 'success',
+      type: 'success' as NotificationTypes,
       message: 'Updated all user details successfully',
     };
   } catch (_) {
     console.log('Error in updating all user details');
     return {
-      type: 'fail',
+      type: 'error' as NotificationTypes,
       message: 'Error in updating all user details',
     };
   }

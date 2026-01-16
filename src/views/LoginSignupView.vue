@@ -11,8 +11,10 @@ import {
 } from '@/userController';
 import { useUserStore } from '@/stores/user';
 import { useRouter } from 'vue-router';
+import { useAppStore } from '@/stores/app';
 
 const userStore = useUserStore();
+const appStore = useAppStore();
 
 const router = useRouter();
 
@@ -29,10 +31,28 @@ const loading = ref(false);
 
 const formMode = ref<'login' | 'signup'>('login');
 
+function resetFormData() {
+  formData.email = '';
+  formData.password = '';
+  formData.name = '';
+  formData.savings = null;
+  formData.investments = null;
+  formData.current = null;
+}
+
 async function loginUser() {
   const userData = await loginExistingUser(formData.email, formData.password);
 
+  appStore.addNotification(userData.message, userData.type);
+
   const userDetails = await getUserDetailsFromDB(formData.email);
+
+  if (!userDetails) {
+    appStore.addNotification('Error fetching user details', 'error');
+    return;
+  } else {
+    appStore.addNotification('User details fetched successfully.', 'success');
+  }
 
   userStore.setUser({
     name: userDetails.user_name,
@@ -51,6 +71,8 @@ async function signupUser() {
   // Similar to loginUser but for signing up
   const newUserData = await signinNewUser(formData.email, formData.password);
 
+  appStore.addNotification(newUserData.message, newUserData.type);
+
   await saveUserDetailsToDB(
     formData.name,
     formData.email,
@@ -59,15 +81,12 @@ async function signupUser() {
     formData.current
   );
 
-  userStore.setUser({
-    name: formData.name,
-    email: formData.email,
-    current: formData.current,
-    savings: formData.savings,
-    investments: formData.investments,
-  });
-
-  userStore.setUserSession(newUserData.data?.session || null);
+  appStore.addNotification(
+    'Verification email sent. Please verify your email before logging in.',
+    'success'
+  );
+  formMode.value = 'login';
+  resetFormData();
 }
 
 async function handleFormSubmit() {

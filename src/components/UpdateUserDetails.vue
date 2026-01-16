@@ -12,9 +12,10 @@ import TxtNumInput from './TxtNumInput.vue';
 import CommonButton from './CommonButton.vue';
 import { updateAllUserDetailsInDB } from '@/userController';
 import { useUserStore } from '@/stores/user';
+import { useAppStore } from '@/stores/app';
 
 const userStore = useUserStore();
-
+const appStore = useAppStore();
 const user = computed(() => userStore.user);
 
 const props = defineProps<{
@@ -63,12 +64,14 @@ async function onPressEscape(e: KeyboardEvent) {
 async function saveChanges() {
   saveButtonLoading.value = true;
 
-  await updateAllUserDetailsInDB(user.value.email, {
+  const response = await updateAllUserDetailsInDB(user.value.email, {
     user_name: updatedDetails.name,
     current: updatedDetails.current || 0,
     savings: updatedDetails.savings || 0,
     investments: updatedDetails.investments || 0,
   });
+
+  appStore.addNotification(response.message, response.type);
 
   userStore.setUser({
     name: updatedDetails.name,
