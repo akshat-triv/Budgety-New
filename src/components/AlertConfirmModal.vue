@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 import CommonButton from './CommonButton.vue';
 // import CheckIcon from '@/components/icons/CheckIcon.vue';
@@ -47,6 +47,22 @@ function handleUserInput(value: number) {
 }
 
 defineExpose({ openModal });
+
+async function onPressEscape(e: KeyboardEvent) {
+  if (e.code === 'Escape') {
+    e.preventDefault();
+    handleUserInput(0);
+    return;
+  }
+}
+
+onMounted(async () => {
+  window.addEventListener('keydown', onPressEscape);
+});
+
+onUnmounted(async () => {
+  window.removeEventListener('keydown', onPressEscape);
+});
 </script>
 
 <template>
@@ -148,8 +164,10 @@ defineExpose({ openModal });
     display: flex;
     align-items: center;
     padding: 0 1.6rem;
+    width: 100%;
 
     & > * {
+      width: 8rem;
       &:first-child {
         margin-left: auto;
       }

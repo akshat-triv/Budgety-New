@@ -319,13 +319,13 @@
 
 @keyframes float {
   0% {
-    transform: translatey(0px);
+    transform: translateY(-10px) translateX(-10px);
   }
   50% {
-    transform: translatey(10px);
+    transform: translateY(10px) translateX(-10px);
   }
   100% {
-    transform: translatey(0px);
+    transform: translateY(-10px) translateX(-10px);
   }
 }
 .circles {

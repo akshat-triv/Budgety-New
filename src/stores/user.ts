@@ -1,4 +1,8 @@
-import { getUserDetailsFromDB, updateUserDetailsInDB } from '@/userController';
+import {
+  getUserDetailsFromDB,
+  signoutCurrentUser,
+  updateUserDetailsInDB,
+} from '@/userController';
 import { Session } from '@supabase/supabase-js';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
@@ -42,6 +46,8 @@ export const useUserStore = defineStore('user', () => {
 
     const parsedSessionData: Session = JSON.parse(sessionData);
 
+    if (parsedSessionData === null) return null;
+
     if (parsedSessionData.expires_at * 1000 > Date.now()) {
       userSession.value = parsedSessionData;
     } else {
@@ -68,6 +74,13 @@ export const useUserStore = defineStore('user', () => {
     return user.value;
   }
 
+  async function signoutUser() {
+    setUserSession(null);
+    setUser(null);
+
+    await signoutCurrentUser();
+  }
+
   return {
     user,
     setUser,
@@ -75,5 +88,6 @@ export const useUserStore = defineStore('user', () => {
     setUserSession,
     loadUserSessionAndDetails,
     updateUserInfo,
+    signoutUser,
   };
 });

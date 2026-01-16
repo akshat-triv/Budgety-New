@@ -56,5 +56,10 @@ function updateValue(value: string) {
   position: relative;
   flex: 1;
   font-size: 1.4rem;
+  transition: all 0.2s ease-in-out;
+
+  &:focus {
+    border: 1px solid var(--vt-c-brand-opacity-8);
+  }
 }
 </style>

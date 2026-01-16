@@ -5,8 +5,9 @@ import GlobalHeader from '@/components/GlobalHeader.vue';
 import BarGraph from '@/components/BarGraph.vue';
 import AddNewTransaction from '@/components/AddNewTransaction.vue';
 import AlertConfirmModal from '@/components/AlertConfirmModal.vue';
+import UpdateUserDetails from '@/components/UpdateUserDetails.vue';
 
-import { reactive, computed, onMounted, ref, watch } from 'vue';
+import { reactive, computed, ref, watch } from 'vue';
 
 import type { Transaction } from '@/types/transaction.types';
 import { useTransactionStore } from '@/stores/transactions';
@@ -19,6 +20,7 @@ import {
 
 import { useInfiniteScroll } from '@vueuse/core';
 import { useUserStore } from '@/stores/user';
+import router from '@/router';
 
 const transactionStore = useTransactionStore();
 const userStore = useUserStore();
@@ -27,6 +29,8 @@ const transactions = computed(() => transactionStore.visibleTransactions);
 const user = computed(() => userStore.user);
 
 const confirm = ref<InstanceType<typeof AlertConfirmModal> | null>(null);
+
+const updateUserDetailsModalActive = ref(false);
 
 async function deleteTransaction(transactionId: string) {
   const res = await confirm.value?.openModal(
@@ -170,6 +174,11 @@ watch(
   },
   { immediate: true }
 );
+
+async function signoutUser() {
+  await userStore.signoutUser();
+  router.push({ name: 'signin' });
+}
 </script>
 
 <template>
@@ -178,6 +187,10 @@ watch(
       :current-balance="user.current"
       :savings-balance="user.savings"
       :investments-balance="user.investments"
+      :user-name="user.name"
+      :user-email="user.email"
+      @logout="signoutUser"
+      @update-profile="updateUserDetailsModalActive = true"
     />
     <div class="dashboard-view-body">
       <div class="transactions-view">
@@ -244,6 +257,12 @@ watch(
   </div>
   <teleport to="#app">
     <alert-confirm-modal ref="confirm" />
+  </teleport>
+  <teleport to="#app">
+    <update-user-details
+      :modal-active="updateUserDetailsModalActive"
+      @close-modal="updateUserDetailsModalActive = false"
+    />
   </teleport>
 </template>
 

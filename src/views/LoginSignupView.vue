@@ -108,6 +108,7 @@ onUnmounted(async () => {
       <MountainAnimation />
     </div>
     <div class="login-signup-form-wrapper">
+      <h1 class="hero">Wealth Tracker</h1>
       <div class="login-signup-wrapper">
         <h1>
           {{
@@ -174,7 +175,7 @@ onUnmounted(async () => {
         </div>
         <common-button
           class="login-button"
-          :button-text="'Login'"
+          :button-text="formMode === 'login' ? 'Login' : 'Sign Up'"
           :loading="loading"
           :disable="!formData.email || !formData.password"
           @click="handleFormSubmit"
@@ -209,6 +210,21 @@ onUnmounted(async () => {
       justify-content: center;
       align-items: center;
       color: var(--vt-c-bg);
+    }
+  }
+
+  &-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .hero {
+      font-size: 2.8rem;
+      margin-bottom: 2.4rem;
+      color: var(--vt-c-text-1);
+      text-align: center;
+      width: 100%;
     }
   }
 

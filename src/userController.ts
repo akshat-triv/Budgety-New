@@ -159,3 +159,35 @@ export async function updateUserDetailsInDB(
     };
   }
 }
+
+export async function updateAllUserDetailsInDB(
+  userId: string,
+  userDetails: {
+    savings: number;
+    investments: number;
+    current: number;
+    user_name: string;
+  }
+) {
+  try {
+    const { error } = await supabase
+      .from('personal_info')
+      .update(userDetails)
+      .eq('user_id', userId);
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      type: 'success',
+      message: 'Updated all user details successfully',
+    };
+  } catch (_) {
+    console.log('Error in updating all user details');
+    return {
+      type: 'fail',
+      message: 'Error in updating all user details',
+    };
+  }
+}

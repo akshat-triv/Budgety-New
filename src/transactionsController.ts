@@ -11,7 +11,6 @@ export async function getAllTransactions(userId: string) {
     let { data: transactions, error } = await supabase
       .from('transactions')
       .select('*')
-      .filter('user_id', 'eq', userId)
       .order('created_at', { ascending: false });
 
     if (error) {

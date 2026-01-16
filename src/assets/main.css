@@ -24,17 +24,17 @@ a,
 
 .spinner {
   display: block;
-  width: 2rem;
-  height: 2rem;
+  width: 2.4rem;
+  height: 2.4rem;
   border-radius: 100%;
-  border: 2px solid transparent;
+  border: 4px solid transparent;
   border-right: 2px solid var(--vt-c-brand);
   animation: spin 0.3s linear infinite;
 }
 
 .spinner-wrapper {
-  width: 3.2rem;
-  height: 3.2rem;
+  width: 3.6rem;
+  height: 3.6rem;
   border-radius: 100%;
   position: absolute;
   top: 50%;
@@ -44,6 +44,7 @@ a,
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: var(--vt-shadow-2);
 }
 
 @keyframes spin {
