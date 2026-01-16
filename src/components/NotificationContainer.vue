@@ -68,6 +68,8 @@ const getNotificationIcon = (type: NotificationTypes) => {
     border-radius: 4px;
     display: flex;
     align-items: center;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 
     @media screen and (max-width: 400px) {
       width: 30rem;
