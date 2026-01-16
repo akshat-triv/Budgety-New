@@ -3,7 +3,7 @@
   "exclude": [],
   "compilerOptions": {
     "composite": true,
-    "lib": [],
+    "skipLibCheck": true,
     "types": ["node", "jsdom"],
     "ignoreDeprecations": "5.0"
   }
