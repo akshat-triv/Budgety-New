@@ -79,12 +79,4 @@ const investmentsBalanceFormatted = computed(() =>
     margin-left: auto;
   }
 }
-
-h1 {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  letter-spacing: 3px;
-  margin-right: auto;
-}
 </style>

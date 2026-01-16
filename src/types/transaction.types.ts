@@ -6,4 +6,5 @@ export type Transaction = {
   date: string;
   id?: number;
   transaction_id: string;
+  user_id: string;
 };

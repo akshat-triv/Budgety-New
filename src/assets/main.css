@@ -7,6 +7,14 @@
   font-weight: normal;
 }
 
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--vt-c-text-1);
+  letter-spacing: 3px;
+  margin-right: auto;
+}
+
 a,
 .green {
   text-decoration: none;

@@ -8,8 +8,19 @@ import WineIcon from './icons/WineIcon.vue';
 import WalletIcon from './icons/WalletIcon.vue';
 import TaxiIcon from './icons/TaxiIcon.vue';
 import MedicalIcon from './icons/MedicalIcon.vue';
+import ClothingIcon from './icons/ClothingIcon.vue';
+import CreditCardIcon from './icons/CreditCardIcon.vue';
+import DevicesIcon from './icons/DevicesIcon.vue';
 
 import DeleteIcon from './icons/DeleteIcon.vue';
+import DogPawIcon from './icons/DogPawIcon.vue';
+import FlightIcon from './icons/FlightIcon.vue';
+import GamingControllerIcon from './icons/GamingControllerIcon.vue';
+import GiftIcon from './icons/GiftIcon.vue';
+import GroupsIcon from './icons/GroupsIcon.vue';
+import PersonalCareIcon from './icons/PersonalCareIcon.vue';
+import SupportAgentIcon from './icons/SupportAgentIcon.vue';
+import UtilitiesIcon from './icons/UtilitiesIcon.vue';
 
 export type Transaction = {
   type: 'Credited' | 'Debited';
@@ -22,34 +33,31 @@ export type Transaction = {
 const props = defineProps<Transaction>();
 const emit = defineEmits(['delete']);
 
-  // 'Housing',
-  // 'Food',
-  // 'Utilities',
-  // 'Transportation',
-  // 'Insurance',
-  // 'Debt Payments',
-  // 'Personal Care',
-  // 'Entertainment',
-  // 'Clothing',
-  // 'Technology',
-  // 'Health Care',
-  // 'Child and Dependent Care',
-  // 'Gifts and Donations',
-  // 'Savings and Investments',
-  // 'Travel',
-  // 'Professional Services',
-  // 'Pet Care',
-  // 'Miscellaneous'
-  // Drinks & Ciggs
-
 const TransactionIcon = computed(() => {
   if (props.tag === 'Food') return FoodIcon;
   if (props.tag === 'Housing') return HouseIcon;
   if (props.tag === 'Drinks & Ciggs') return WineIcon;
-  if (props.tag === 'Money') return WalletIcon;
+  if (
+    props.tag === 'Money' ||
+    props.tag === 'Savings' ||
+    props.tag === 'Investments'
+  )
+    return WalletIcon;
   if (props.tag === 'Transportation') return TaxiIcon;
-  if (props.tag === 'Health Care') return MedicalIcon;
+  if (props.tag === 'Health Care' || props.tag === 'Insurance')
+    return MedicalIcon;
   if (props.tag === 'Miscellaneous') return ShopCartIcon;
+  if (props.tag === 'Clothing') return ClothingIcon;
+  if (props.tag === 'Technology') return DevicesIcon;
+  if (props.tag === 'Utilities') return UtilitiesIcon;
+  if (props.tag === 'Debt Payments') return CreditCardIcon;
+  if (props.tag === 'Personal Care') return PersonalCareIcon;
+  if (props.tag === 'Entertainment') return GamingControllerIcon;
+  if (props.tag === 'Child and Dependent Care') return GroupsIcon;
+  if (props.tag === 'Gifts and Donations') return GiftIcon;
+  if (props.tag === 'Travel') return FlightIcon;
+  if (props.tag === 'Professional Services') return SupportAgentIcon;
+  if (props.tag === 'Pet Care') return DogPawIcon;
   return null;
 });
 

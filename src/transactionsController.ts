@@ -4,14 +4,20 @@ import type { Transaction } from './types/transaction.types';
 const supabaseUrl = 'https://eixdwmezkuzewigzdjzc.supabase.co';
 const supabaseKey = `sb_publishable_IPwAk_gy9bqvbe0tUm98Aw_ljERl4Qi`;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
-export async function getAllTransactions() {
+export async function getAllTransactions(userId: string) {
   try {
     let { data: transactions, error } = await supabase
       .from('transactions')
       .select('*')
+      .filter('user_id', 'eq', userId)
       .order('created_at', { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
     return transactions;
   } catch (_) {
     console.log('Error in getting transactions');

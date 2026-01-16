@@ -44,10 +44,6 @@ const props = withDefaults(defineProps<buttonProps>(), {
     cursor: pointer;
     background: var(--vt-c-brand-light);
   }
-
-  &.loading {
-    justify-content: space-evenly;
-  }
 }
 
 .spinner {

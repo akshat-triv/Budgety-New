@@ -4,18 +4,21 @@ import TxtNumInput from './TxtNumInput.vue';
 import DateInput from './DateInput.vue';
 import CommonButton from './CommonButton.vue';
 
-import { onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { saveNewTransactionInDB } from '@/transactionsController';
 import { useTransactionStore } from '@/stores/transactions';
 import type { Transaction } from '@/types/transaction.types';
 
 import { customAlphabet } from 'nanoid';
 import { useFocusWithin } from '@vueuse/core';
+import { useUserStore } from '@/stores/user';
 
 const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const nanoid = customAlphabet(alphabet, 13);
 
 const transactionStore = useTransactionStore();
+const userStore = useUserStore();
+const user = computed(() => userStore.user);
 
 const newTransaction = reactive({
   type: 'Debited',
@@ -44,6 +47,7 @@ async function addNewTransaction() {
     tag: newTransaction.tag,
     transaction_id: nanoid(),
     date: newTransaction.date,
+    user_id: user.value!.email,
   } as Transaction;
 
   addButtonLoader.value = true;
@@ -112,12 +116,12 @@ onMounted(() => {
         'Health Care',
         'Child and Dependent Care',
         'Gifts and Donations',
-        'Savings and Investments',
+        'Savings',
+        'Investments',
         'Travel',
         'Professional Services',
         'Pet Care',
         'Money',
-        'Miscellaneous',
       ]"
       :label="'Tag'"
       :placeholder="'Select'"

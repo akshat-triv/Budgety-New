@@ -18,10 +18,13 @@ import {
 } from '@/transactionsController';
 
 import { useInfiniteScroll } from '@vueuse/core';
+import { useUserStore } from '@/stores/user';
 
 const transactionStore = useTransactionStore();
+const userStore = useUserStore();
 
 const transactions = computed(() => transactionStore.visibleTransactions);
+const user = computed(() => userStore.user);
 
 const confirm = ref<InstanceType<typeof AlertConfirmModal> | null>(null);
 
@@ -138,9 +141,9 @@ const barGraphData = computed(() => {
 // Load from local storage
 const transactionLoading = ref(false);
 
-async function loadFromSupabese() {
+async function loadFromSupabese(userEmail: string) {
   transactionLoading.value = true;
-  const transactions = await getAllTransactions();
+  const transactions = await getAllTransactions(userEmail);
   transactionLoading.value = false;
   transactionStore.addTransactions(
     transactions as unknown as Array<Transaction>,
@@ -158,17 +161,23 @@ useInfiniteScroll(
   { distance: 10 }
 );
 
-onMounted(() => {
-  loadFromSupabese();
-});
+watch(
+  user,
+  async (newUser) => {
+    if (newUser !== null) {
+      await loadFromSupabese(newUser.email);
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
-  <div class="dashboard-view">
+  <div v-if="user !== null" class="dashboard-view">
     <global-header
-      :current-balance="55000"
-      :savings-balance="25000"
-      :investments-balance="30000"
+      :current-balance="user.current"
+      :savings-balance="user.savings"
+      :investments-balance="user.investments"
     />
     <div class="dashboard-view-body">
       <div class="transactions-view">
@@ -229,6 +238,9 @@ onMounted(() => {
         </common-chart-wrapper>
       </div>
     </div>
+  </div>
+  <div v-else class="spinner-wrapper">
+    <span class="spinner"></span>
   </div>
   <teleport to="#app">
     <alert-confirm-modal ref="confirm" />

@@ -4,6 +4,7 @@
   "compilerOptions": {
     "composite": true,
     "target": "esnext",
+    "module": "esnext",
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
