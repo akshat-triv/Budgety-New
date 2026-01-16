@@ -123,7 +123,7 @@ onMounted(() => {
       v-model="newTransaction.amount"
       :label="'Amount'"
       :placeholder="'Enter Amount'"
-      :input-type="'text'"
+      :input-type="'number'"
     />
     <select-input
       :id="'transaction-tag'"

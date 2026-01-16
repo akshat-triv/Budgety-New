@@ -137,7 +137,7 @@ onUnmounted(async () => {
           <div class="input-fields-wrapper">
             <TxtNumInput
               v-model="formData.password"
-              input-type="text"
+              input-type="password"
               :label="'Password'"
               :id="'password'"
               :placeholder="'Enter Password'"

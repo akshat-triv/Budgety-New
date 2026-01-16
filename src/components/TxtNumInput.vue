@@ -5,7 +5,7 @@ type commonInput = {
   label?: string;
   id: string;
   placeholder: string;
-  inputType: 'text' | 'number';
+  inputType: 'text' | 'number' | 'password';
   modelValue: string | number | null;
 };
 
@@ -33,7 +33,7 @@ function updateValue(value: string) {
 <template>
   <common-input-wrapper :label="props.label" :id="props.id">
     <input
-      type="text"
+      :type="props.inputType === 'password' ? 'password' : 'text'"
       :id="props.id"
       class="txt-num-input"
       :placeholder="props.placeholder"
