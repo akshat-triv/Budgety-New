@@ -3,6 +3,8 @@ import { computed, ref } from 'vue';
 import SettingsIcon from './icons/SettingsIcon.vue';
 import LogoutIcon from './icons/logoutIcon.vue';
 import { onClickOutside } from '@vueuse/core';
+import VisibilityOffIcon from './icons/VisibilityOffIcon.vue';
+import VisibilityOnIcon from './icons/VisibilityOnIcon.vue';
 
 const props = defineProps<{
   currentBalance: number;
@@ -20,27 +22,40 @@ const emit = defineEmits<{
 const userProfileDetails = ref<HTMLElement | null>(null);
 
 const showUserProfileOptions = ref(false);
+const showBalanceDetails = ref(false);
 
-const currentBalanceFormatted = computed(() =>
-  props.currentBalance.toLocaleString('en-IN', {
+const currentBalanceFormatted = computed(() => {
+  if (!showBalanceDetails.value) {
+    return 'XXXXXXX';
+  }
+
+  return props.currentBalance.toLocaleString('en-IN', {
     style: 'currency',
     currency: 'INR',
-  })
-);
+  });
+});
 
-const savingsBalanceFormatted = computed(() =>
-  props.savingsBalance.toLocaleString('en-IN', {
+const savingsBalanceFormatted = computed(() => {
+  if (!showBalanceDetails.value) {
+    return 'XXXXXXX';
+  }
+
+  return props.savingsBalance.toLocaleString('en-IN', {
     style: 'currency',
     currency: 'INR',
-  })
-);
+  });
+});
 
-const investmentsBalanceFormatted = computed(() =>
-  props.investmentsBalance.toLocaleString('en-IN', {
+const investmentsBalanceFormatted = computed(() => {
+  if (!showBalanceDetails.value) {
+    return 'XXXXXXX';
+  }
+
+  return props.investmentsBalance.toLocaleString('en-IN', {
     style: 'currency',
     currency: 'INR',
-  })
-);
+  });
+});
 
 const userInitials = computed(() => {
   const names = props.userName.split(' ');
@@ -65,6 +80,18 @@ onClickOutside(userProfileDetails, () => {
       <div class="money-tag investments">
         Mutual Funds balance: {{ investmentsBalanceFormatted }}
       </div>
+      <VisibilityOffIcon
+        v-if="showBalanceDetails"
+        class="visibility-icon"
+        :title="'Hide Balance'"
+        @click="showBalanceDetails = false"
+      />
+      <VisibilityOnIcon
+        v-else
+        class="visibility-icon"
+        :title="'Show Balance'"
+        @click="showBalanceDetails = true"
+      />
     </div>
     <div
       class="user-profile"
@@ -96,6 +123,20 @@ onClickOutside(userProfileDetails, () => {
 </template>
 
 <style lang="scss" scoped>
+.visibility-icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  margin-left: 1.6rem;
+  color: var(--vt-c-text-1);
+  stroke: currentColor;
+  fill: currentColor;
+
+  &:hover {
+    cursor: pointer;
+    color: var(--vt-c-text-2);
+  }
+}
+
 .user-profile {
   position: relative;
 }
@@ -221,6 +262,7 @@ onClickOutside(userProfileDetails, () => {
 
   &-wrapper {
     display: flex;
+    align-items: center;
     gap: 2rem;
     margin-left: auto;
   }
