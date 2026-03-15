@@ -31,7 +31,7 @@ const props = defineProps<BarGraphProps>();
 const chartData = computed(() => {
   const datasets = [];
 
-  if (props.data.length)
+  if (props.data[0])
     datasets.push({
       label: props.dataLabel[0],
       data: props.data[0],
@@ -39,11 +39,27 @@ const chartData = computed(() => {
       hoverOffset: 4,
     });
 
-  if (props.data.length === 2)
+  if (props.data[1])
     datasets.push({
       label: props.dataLabel[1],
       data: props.data[1],
       backgroundColor: '#3489db',
+      hoverOffset: 4,
+    });
+
+  if (props.data[2])
+    datasets.push({
+      label: props.dataLabel[2],
+      data: props.data[2],
+      backgroundColor: '#f39c12',
+      hoverOffset: 4,
+    });
+
+  if (props.data[3])
+    datasets.push({
+      label: props.dataLabel[3],
+      data: props.data[3],
+      backgroundColor: '#8e44ad',
       hoverOffset: 4,
     });
 

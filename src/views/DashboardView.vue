@@ -127,10 +127,25 @@ const barGraphData = computed(() => {
 
   const debitData = new Map<string, number>();
   const creditData = new Map<string, number>();
+  const savingsData = new Map<string, number>();
+  const investmentsData = new Map<string, number>();
 
   for (const transaction of transactions) {
     const month = new Date(transaction.date).toDateString().split(' ')[1];
     if (transaction.type === 'Debited') {
+      if (transaction.tag === 'Savings') {
+        if (savingsData.has(month)) {
+          const groupAmount = Number(savingsData.get(month));
+          savingsData.set(month, groupAmount + transaction.amount);
+        } else savingsData.set(month, transaction.amount);
+        continue;
+      } else if (transaction.tag === 'Investments') {
+        if (investmentsData.has(month)) {
+          const groupAmount = Number(investmentsData.get(month));
+          investmentsData.set(month, groupAmount + transaction.amount);
+        } else investmentsData.set(month, transaction.amount);
+        continue;
+      }
       if (debitData.has(month)) {
         const groupAmount = Number(debitData.get(month));
         debitData.set(month, groupAmount + transaction.amount);
@@ -145,7 +160,12 @@ const barGraphData = computed(() => {
 
   return {
     labels: Array.from(debitData.keys()),
-    data: [Array.from(debitData.values()), Array.from(creditData.values())],
+    data: [
+      Array.from(debitData.values()),
+      Array.from(creditData.values()),
+      Array.from(savingsData.values()),
+      Array.from(investmentsData.values()),
+    ],
   };
 });
 
@@ -253,7 +273,7 @@ async function signoutUser() {
           @update:to-date="expensesDates.toDate = $event"
         >
           <bar-graph
-            :data-label="['Expenses', 'Income']"
+            :data-label="['Expenses', 'Income', 'Savings', 'Investments']"
             :data="barGraphData.data"
             :labels="barGraphData.labels"
           />
