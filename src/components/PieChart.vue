@@ -39,7 +39,10 @@ const data = computed(() => {
 
 <template>
   <div class="chart-wrapper">
-    <Pie :data="data" />
+    <Pie
+      :options="{ responsive: false, maintainAspectRatio: true }"
+      :data="data"
+    />
     <span v-if="!props.data.length" class="no-data-message">
       No data available
     </span>

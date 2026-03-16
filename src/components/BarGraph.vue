@@ -31,14 +31,6 @@ const props = defineProps<BarGraphProps>();
 const chartData = computed(() => {
   const datasets = [];
 
-  if (props.data[0])
-    datasets.push({
-      label: props.dataLabel[0],
-      data: props.data[0],
-      backgroundColor: '#42b883',
-      hoverOffset: 4,
-    });
-
   if (props.data[1])
     datasets.push({
       label: props.dataLabel[1],
@@ -47,11 +39,19 @@ const chartData = computed(() => {
       hoverOffset: 4,
     });
 
+  if (props.data[0])
+    datasets.push({
+      label: props.dataLabel[0],
+      data: props.data[0],
+      backgroundColor: '#f39c12',
+      hoverOffset: 4,
+    });
+
   if (props.data[2])
     datasets.push({
       label: props.dataLabel[2],
       data: props.data[2],
-      backgroundColor: '#f39c12',
+      backgroundColor: '#42b883',
       hoverOffset: 4,
     });
 
@@ -69,7 +69,8 @@ const chartData = computed(() => {
   };
 });
 const chartOptions = {
-  responsive: true,
+  responsive: false,
+  maintainAspectRatio: true,
 };
 </script>
 

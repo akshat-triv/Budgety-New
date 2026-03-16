@@ -244,7 +244,7 @@ onClickOutside(userProfileDetails, () => {
 }
 
 .money-tag {
-  font-size: 14px;
+  font-size: 1.4rem;
   border-radius: 2rem;
   padding: 0.4rem 1rem;
 
