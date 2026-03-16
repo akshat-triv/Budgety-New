@@ -132,29 +132,38 @@ const barGraphData = computed(() => {
 
   for (const transaction of transactions) {
     const month = new Date(transaction.date).toDateString().split(' ')[1];
+
+    if (!debitData.has(month)) {
+      debitData.set(month, 0);
+    }
+    if (!creditData.has(month)) {
+      creditData.set(month, 0);
+    }
+    if (!savingsData.has(month)) {
+      savingsData.set(month, 0);
+    }
+    if (!investmentsData.has(month)) {
+      investmentsData.set(month, 0);
+    }
+
     if (transaction.type === 'Debited') {
       if (transaction.tag === 'Savings') {
-        if (savingsData.has(month)) {
-          const groupAmount = Number(savingsData.get(month));
-          savingsData.set(month, groupAmount + transaction.amount);
-        } else savingsData.set(month, transaction.amount);
+        const groupAmount = Number(savingsData.get(month));
+        savingsData.set(month, groupAmount + transaction.amount);
+
         continue;
       } else if (transaction.tag === 'Investments') {
-        if (investmentsData.has(month)) {
-          const groupAmount = Number(investmentsData.get(month));
-          investmentsData.set(month, groupAmount + transaction.amount);
-        } else investmentsData.set(month, transaction.amount);
+        const groupAmount = Number(investmentsData.get(month));
+        investmentsData.set(month, groupAmount + transaction.amount);
+
         continue;
       }
-      if (debitData.has(month)) {
-        const groupAmount = Number(debitData.get(month));
-        debitData.set(month, groupAmount + transaction.amount);
-      } else debitData.set(month, transaction.amount);
+
+      const groupAmount = Number(debitData.get(month));
+      debitData.set(month, groupAmount + transaction.amount);
     } else if (transaction.type === 'Credited') {
-      if (creditData.has(month)) {
-        const groupAmount = Number(creditData.get(month));
-        creditData.set(month, groupAmount + transaction.amount);
-      } else creditData.set(month, transaction.amount);
+      const groupAmount = Number(creditData.get(month));
+      creditData.set(month, groupAmount + transaction.amount);
     }
   }
 
